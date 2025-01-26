@@ -1,0 +1,16 @@
+services:
+  db:
+    # keep the postgres version in sync with the Nix version in deployment
+#    image: postgres:16
+    image: postgis/postgis:16-3.5
+    restart: always
+    environment:
+      # forward the environment variables to the postgres container
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      # 5432 is the default port for postgres
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
