@@ -1,57 +1,59 @@
-cabal-version:      2.4
-name:               pubsub
-version:            0.1.0.0
-copyright:          2024 Malte neuss
-category:           Web
-synopsis:           Async message passing
-
+cabal-version: 2.4
+name:          pubsub
+version:       0.1.0.0
+copyright:     2024 Malte neuss
+category:      Web
+synopsis:      Async message passing
 
 common shared
   default-language:   GHC2021
-  default-extensions: 
-    -- simulate GHC2024, https://downloads.haskell.org/ghc/9.10.1/docs/users_guide/9.10.1-notes.html
+  default-extensions:
     DataKinds
     DerivingStrategies
     DisambiguateRecordFields
     ExplicitNamespaces
     GADTs
-    MonoLocalBinds
-    LambdaCase
-    RoleAnnotations
-    OverloadedStrings
     ImportQualifiedPost
-  ghc-options:
-    -Wall
-    -Wincomplete-record-updates
-    -Wincomplete-uni-patterns
-    -Wmissing-deriving-strategies
-    -Wunused-foralls -Wunused-foralls
-    -fprint-explicit-foralls
-    -fprint-explicit-kinds
+    LambdaCase
+    MonoLocalBinds
+    OverloadedStrings
+    RoleAnnotations
 
-executable pubsub 
-  import:  shared
-  main-is: Pubsub.hs
+  -- simulate GHC2024, https://downloads.haskell.org/ghc/9.10.1/docs/users_guide/9.10.1-notes.html
+  ghc-options:
+    -Wall -Wincomplete-record-updates -Wincomplete-uni-patterns
+    -Wmissing-deriving-strategies -Wunused-foralls -Wunused-foralls
+    -fprint-explicit-foralls -fprint-explicit-kinds
+
   build-depends:
-    -- , base          >=4.13.0.0 && <4.18.0.0.0
-    , base          
-    , text
-    , bytestring
-    , binary
-    , time
-    , mtl
-    , data-default
     , aeson
+    , base
+    , binary
+    , bytestring
     , case-insensitive
-    , zlib
+    , containers
+    , data-default
+    , monad-logger
+    , mtl
+    , path-pieces
     , persistent
     , persistent-postgresql
     , postgresql-simple
     , resource-pool
-    , path-pieces
+    , text
+    , time
     , uuid
-    , monad-logger
-    , containers
+    , zlib
+
+  -- , base          >=4.13.0.0 && <4.18.0.0.0
   hs-source-dirs:     src
-  other-modules:
-    Pubsub.PubsubModels
+
+executable pubsubskiplocked
+  import:        shared
+  main-is:       PubsubSkipLocked.hs
+  other-modules: Pubsub.PubsubModels
+
+executable pubsub
+  import:        shared
+  main-is:       PubsubSkipLocked.hs
+  other-modules: Pubsub.PubsubModels
