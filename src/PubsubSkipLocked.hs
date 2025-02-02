@@ -59,8 +59,7 @@ main = do
                     void $ execute_ conn "COMMIT;"
             -- putStrLn $ "Received notification: " ++ (show $ notificationData notification)
     conn <- connectPostgreSQL (BS8.pack connectionStr)
-    -- void $ execute @(String) conn "INSERT INTO tasks (payload) VALUES (?)" ("new task payload")
-    void $ execute_ conn "INSERT INTO task (payload) VALUES ('a payload')"
+    void $ execute conn "INSERT INTO task (payload) VALUES (?)" (Only @String ("new task payload"))
         -- trigger a notification, https://www.postgresql.org/docs/current/sql-notify.html
     -- Block the main thread
-    threadDelay 10000000  -- wait for 10 seconds
+    threadDelay 10000000  -- wait for 10 seconds before shutting down the program

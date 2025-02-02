@@ -29,17 +29,14 @@ main = do
   -- https://hackage.haskell.org/package/postgresql-simple/docs/Database-PostgreSQL-Simple-Notification.html#v:getNotification
   -- but can use Persistent for everything else
   connectionStr <- getEnv "DATABASE_URL"
-  -- mvar <- newEmptyMVar
   forkIO $ do
     -- receive notifications on a separate thread, https://www.postgresql.org/docs/current/sql-listen.html
     conn <- connectPostgreSQL (BS8.pack connectionStr)
     void $ execute_ conn "LISTEN task_listener"
     forever $ do
       notification <- getNotification conn
-      -- putStrLn $ "Received notification: " ++ (show $ notificationData notification)
       putStrLn $ "Received notification: " ++ (show $ notification)
       threadDelay 1000000 -- wait for 1 second before checking for the next notification
-      -- putMVar mvar ()
   pool <- runStdoutLoggingT $ createPostgresqlPool (BS8.pack connectionStr) 1
 
   flip runSqlPool pool $ do
@@ -48,6 +45,4 @@ main = do
     void $ rawExecute "NOTIFY task_listener, 'test message'" []
   -- rawSql doesn't seem to work, because that function always expects a return value from Postgres that'll never come.
   -- void $ rawSql @(Single (Maybe BS.ByteString)) "SELECT pg_notify('task_listener', 'test')" []
-  -- Block the main thread
-  -- takeMVar mvar
-  threadDelay 10000000 -- wait for 10 seconds before checking for the next notification
+  threadDelay 10000000 -- wait for 10 seconds before shutting down the program
