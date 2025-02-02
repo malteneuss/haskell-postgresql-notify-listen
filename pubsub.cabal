@@ -55,5 +55,5 @@ executable pubsubskiplocked
 
 executable pubsub
   import:        shared
-  main-is:       PubsubSkipLocked.hs
+  main-is:       Pubsub.hs
   other-modules: Pubsub.PubsubModels
